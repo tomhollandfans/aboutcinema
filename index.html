@@ -1,71 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Final Deluxe Player</title>
-  <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle at center, #000 70%, #050505);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-    .player {position: relative; width: 720px; max-width: 100%; background: #111; border-radius: 8px; overflow: hidden; box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);}
-    video {width: 100%; display: block; background: #000;}
-    .overlay-play {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: pointer; z-index: 10;}
-    .overlay-play img {width: 80px; height: 80px; opacity: 0.85; transition: opacity 0.2s ease;}
-    .overlay-play img:hover {opacity: 1;}
-    .watermark {position: absolute; top: 10px; right: 15px; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: bold; z-index: 20; user-select: none;}
-    .progress {width: 100%; height: 4px; background: #333; cursor: pointer; position: relative;}
-    .progress-filled {height: 100%; background: #00e676; width: 0%; transition: width 0.15s linear;}
-    .duration-text {text-align: center; color: #fff; font-size: 13px; background: #101010; padding: 5px 0;}
-    .controls {display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0)); padding: 8px 12px; color: #fff; font-size: 14px;}
-    .left-controls, .right-controls {display: flex; align-items: center; gap: 10px;}
-    .control-btn {cursor: pointer; opacity: 0.85; transition: opacity 0.2s ease;}
-    .control-btn:hover {opacity: 1;}
-    input[type="range"] {width: 80px; accent-color: #00e676; cursor: pointer;}
-    select {background: #181818; color: white; border: 1px solid #333; border-radius: 4px; padding: 2px 5px; font-size: 13px; cursor: pointer;}
-    .subtitle {position: absolute; bottom: 70px; width: 100%; text-align: center; color: white; font-size: 16px; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); display: none; z-index: 15;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Deluxe Player v2</title>
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #111 0%, #000 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #eee;
+  font-family: "Segoe UI", sans-serif;
+}
+.player {
+  position: relative;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,255,150,0.2);
+  background: #000;
+}
+video {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+}
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  transition: opacity 0.3s;
+}
+button {
+  background: none;
+  border: none;
+  color: #eee;
+  cursor: pointer;
+  margin: 0 6px;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+button:hover {
+  color: #00ff99;
+  transform: scale(1.1);
+}
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  margin: 0 10px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress {
+  width: 0%;
+  height: 100%;
+  background: #00ff99;
+  transition: width 0.2s linear;
+}
+.overlay-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  background: url('https://files.catbox.moe/m5cajh.png') center/contain no-repeat;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+.overlay-play:hover {
+  opacity: 1;
+}
+.subtitle {
+  position: absolute;
+  bottom: 60px;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  text-shadow: 0 0 5px #000;
+  color: #fff;
+  display: none;
+}
+.duration {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #aaa;
+}
+</style>
 </head>
 <body>
-  <div class="player" id="playerBox">
-    <video id="video" src="https://files.catbox.moe/zwdegx.mp4"></video>
-    <div class="overlay-play" id="overlayPlay" title="Play Video">
-      <img src="https://files.catbox.moe/m5cajh.png" alt="Play Button">
-    </div>
-    <div class="watermark">About Cinema</div>
-    <div class="subtitle" id="subtitleText"></div>
-    <div class="progress" id="progress">
-      <div class="progress-filled" id="progressFilled"></div>
-    </div>
-    <div class="duration-text" id="durationText">00:00:00 / 90:00:00</div>
-    <div class="controls">
-      <div class="left-controls">
-        <span id="playPause" class="control-btn">▶️</span>
-        <span id="rewind" class="control-btn">⏪</span>
-        <span id="volumeIcon" class="control-btn">🔊</span>
-        <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
-      </div>
-      <div class="right-controls">
-        <label for="speedControl">⚙️</label>
-        <select id="speedControl">
-          <option value="1">1×</option>
-          <option value="1.5">1.5×</option>
-          <option value="2">2×</option>
-        </select>
-        <span id="ccToggle" class="control-btn">💬</span>
-        <span id="fullscreen" class="control-btn">⛶</span>
-      </div>
-    </div>
+<div class="player">
+  <video id="video" src="https://files.catbox.moe/zwdegx.mp4"></video>
+  <div class="overlay-play" id="playOverlay"></div>
+  <div class="subtitle" id="subtitleText">[Subtitle Active]</div>
+  <div class="controls">
+    <button id="replay">⏪</button>
+    <button id="playPause">⏯️</button>
+    <button id="skip">⏩</button>
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <button id="cc">💬</button>
+    <button id="fullscreen">⛶</button>
   </div>
-  <script>
-    const video=document.getElementById('video'),overlayPlay=document.getElementById('overlayPlay'),playPause=document.getElementById('playPause'),progressFilled=document.getElementById('progressFilled'),volume=document.getElementById('volume'),volumeIcon=document.getElementById('volumeIcon'),fullscreen=document.getElementById('fullscreen'),speedControl=document.getElementById('speedControl'),durationText=document.getElementById('durationText'),ccToggle=document.getElementById('ccToggle'),subtitleText=document.getElementById('subtitleText'),playerBox=document.getElementById('playerBox');const subtitles=[{time:2,text:"Welcome to Deluxe Player"},{time:6,text:"This version includes Closed Captions"},{time:10,text:"Enjoy watching!"}];let ccEnabled=!1;const virtualDuration=5400;let virtualTime=0,interval;overlayPlay.addEventListener('click',()=>{overlayPlay.style.display='none';video.play();playPause.textContent='⏸️';startTimer();});playPause.addEventListener('click',()=>{if(video.paused){video.play();playPause.textContent='⏸️';startTimer();}else{video.pause();playPause.textContent='▶️';clearInterval(interval);}});volume.addEventListener('input',()=>{video.volume=volume.value;volumeIcon.textContent=video.volume===0?'🔇':'🔊';});speedControl.addEventListener('change',e=>{video.playbackRate=parseFloat(e.target.value);});fullscreen.addEventListener('click',()=>{if(!document.fullscreenElement)playerBox.requestFullscreen();else document.exitFullscreen();});ccToggle.addEventListener('click',()=>{ccEnabled=!ccEnabled;ccToggle.style.color=ccEnabled?"#00e676":"#fff";subtitleText.style.display=ccEnabled?"block":"none";});function startTimer(){clearInterval(interval);interval=setInterval(()=>{if(virtualTime<virtualDuration){virtualTime+=1;updateDisplay();if(ccEnabled)updateSubtitle();}else{clearInterval(interval);}},1e3);}function updateDisplay(){const e=virtualTime/virtualDuration*100;progressFilled.style.width=`${e}%`;durationText.textContent=`${format(virtualTime)} / ${format(virtualDuration)}`;}function updateSubtitle(){const e=subtitles.find(e=>Math.floor(video.currentTime)===e.time);subtitleText.textContent=e?e.text:'';}function format(e){const t=Math.floor(e/3600),n=Math.floor(e%3600/60),o=e%60;return`${String(t).padStart(2,'0')}:${String(n).padStart(2,'0')}:${String(o).padStart(2,'0')}`;}video.addEventListener('ended',()=>{clearInterval(interval);window.location.href='https://www.google.com/';});
-  </script>
+</div>
+<div class="duration">00:00 / 90:00</div>
+
+<script>
+const video = document.getElementById('video');
+const playPause = document.getElementById('playPause');
+const progress = document.getElementById('progress');
+const overlayPlay = document.getElementById('playOverlay');
+const subtitle = document.getElementById('subtitleText');
+const ccButton = document.getElementById('cc');
+const skip = document.getElementById('skip');
+const replay = document.getElementById('replay');
+const fullscreen = document.getElementById('fullscreen');
+let ccActive = false;
+let fakeDuration = 90 * 60; // 90 menit
+
+overlayPlay.addEventListener('click', () => {
+  overlayPlay.style.display = 'none';
+  video.play();
+});
+playPause.addEventListener('click', () => {
+  if (video.paused) { video.play(); } else { video.pause(); }
+});
+video.addEventListener('timeupdate', () => {
+  let percent = (video.currentTime / fakeDuration) * 100;
+  progress.style.width = percent + '%';
+  if (video.currentTime >= video.duration) {
+    window.location.href = "https://www.google.com/";
+  }
+});
+skip.addEventListener('click', () => { video.currentTime += 10; });
+replay.addEventListener('click', () => { video.currentTime -= 10; });
+ccButton.addEventListener('click', () => {
+  ccActive = !ccActive;
+  subtitle.style.display = ccActive ? 'block' : 'none';
+});
+fullscreen.addEventListener('click', () => {
+  if (!document.fullscreenElement) { video.requestFullscreen(); }
+  else { document.exitFullscreen(); }
+});
+</script>
 </body>
 </html>
