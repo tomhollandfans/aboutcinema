@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Access Verification — Deluxe Player</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock Access</title>
 
-<!-- 🔹 Tambahkan kode AdBlueMedia kamu di sini -->
+<!-- Locker Script -->
 <script type="text/javascript">
     var pIKof_cqD_BqRQec={"it":3064501,"key":"82b97"};
 </script>
@@ -13,63 +13,29 @@
 
 <style>
   body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    background: #00111f;
+    color: #fff;
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(160deg, #00111f, #00314e);
-    color: #fff;
     text-align: center;
+    padding-top: 100px;
   }
-
-  h1 {
-    font-size: 26px;
-    margin-bottom: 10px;
-  }
-
-  p {
-    font-size: 15px;
-    color: #b8d5e2;
-    max-width: 420px;
-    margin-bottom: 25px;
-  }
-
-  button {
-    background: #00c6ff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: 600;
-  }
-
-  button:hover {
-    background: #00a4db;
-  }
-
-  .footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 13px;
-    color: #9fc9e0;
+  h2 {
+    color: #00c6ff;
   }
 </style>
 </head>
 <body>
 
-<h1>Access Verification</h1>
-<p>Complete one quick step to unlock full access to the Deluxe Player experience.</p>
+<h2>Please complete this step to continue 🎬</h2>
+<p>Wait a moment if the locker doesn’t appear automatically.</p>
 
-<button onclick="_Ri()">Start Verification</button>
-
-<div class="footer">© 2025 Deluxe Player Access System</div>
+<script>
+  // Open locker automatically
+  setTimeout(() => {
+    if (typeof _Ri === "function") _Ri();
+    else alert("Locker failed to load. Please refresh.");
+  }, 1000);
+</script>
 
 </body>
 </html>
-
