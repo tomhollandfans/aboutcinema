@@ -1,341 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Final Deluxe Player v5 — Hybrid Edition</title>
+<title>Final Deluxe Player v6</title>
+
 <style>
-  :root{
-    --bg:#000;
-    --panel:#0f1113;
-    --text:#eee;
-    --muted:#9aa4ad;
-    --accent:#00ff99; /* neon green for dark */
-    --accent-light:#8fd3ff; /* light-blue accent for light theme */
-    --control-bg: rgba(0,0,0,0.6);
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(160deg, #00111f, #00314e);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
   }
 
-  /* Light theme overrides */
-  body.light{
-    --bg:#f6fbff;
-    --panel:#ffffff;
-    --text:#0b1730;
-    --muted:#4b6478;
-    --accent:var(--accent-light);
-    --control-bg: rgba(255,255,255,0.85);
+  h1 {
+    font-size: 22px;
+    margin-bottom: 12px;
+    color: #a8dfff;
   }
 
-  /* Basic reset & layout */
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;-webkit-font-smoothing:antialiased}
-  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
-
-  /* Player card */
-  .player-card{width:100%;max-width:980px;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.55);background:linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02));position:relative}
-
-  /* Title bar (mini) */
-  .title-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-bottom:1px solid rgba(255,255,255,0.03)}
-  .title-left{display:flex;align-items:center;gap:12px}
-  .title-left .now-label{font-weight:800;font-size:18px;letter-spacing:0.6px}
-  .title-left .subtitle{font-size:13px;color:var(--muted);font-weight:600}
-
-  .title-right{display:flex;align-items:center;gap:8px}
-  .theme-toggle{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px 10px;border-radius:8px;color:var(--text);cursor:pointer;font-weight:600}
-  .theme-toggle:hover{transform:translateY(-1px)}
-
-  /* Video area */
-  .video-area{position:relative;background:#000}
-  video{width:100%;height:auto;display:block;background:#000}
-
-  /* center overlay play — using inline svg */
-  .overlay-play{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:6
+  .player-container {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
   }
-  .overlay-play button{
-    pointer-events:auto;border:0;background:rgba(0,0,0,0.55);width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(3px);
-    transition:transform .22s ease, box-shadow .18s ease;
+
+  video {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    display: block;
   }
-  .overlay-play button:hover{transform:scale(1.08);box-shadow:0 6px 26px rgba(0,0,0,0.45)}
-  .overlay-play svg{width:38px;height:38px;fill:var(--text)}
 
-  /* loading spinner */
-  .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;border:4px solid rgba(255,255,255,0.08);border-top-color:var(--accent);animation:spin 1s linear infinite;display:none;z-index:7}
-  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
 
-  /* subtitle text */
-  .subtitle{position:absolute;bottom:92px;width:100%;text-align:center;font-size:16px;color:var(--text);text-shadow:0 2px 10px rgba(0,0,0,0.75);display:none;z-index:6;padding:0 12px}
+  #playButton img {
+    width: 90px;
+    height: 90px;
+    opacity: 0.9;
+    transition: 0.3s;
+  }
 
-  /* Controls */
-  .controls{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--control-bg);z-index:6}
-  .ctrl-left,.ctrl-right{display:flex;align-items:center;gap:8px}
-  .btn{background:transparent;border:0;color:var(--text);cursor:pointer;font-size:18px;padding:8px;border-radius:8px}
-  .btn:hover{color:var(--accent)}
-  .progress-wrap{flex:1;display:flex;flex-direction:column;gap:8px}
-  .progress{height:6px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden;cursor:pointer}
-  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent), rgba(255,255,255,0.08));transition:width .15s linear}
-  .time-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:0 6px}
+  #playButton img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 
-  /* volume controls */
-  .volume {display:flex;align-items:center;gap:8px}
-  .volume input[type=range]{width:110px;accent-color:var(--accent);cursor:pointer}
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #021c2b;
+    padding: 10px;
+    gap: 10px;
+  }
 
-  /* watermark */
-  .watermark{position:absolute;top:14px;right:16px;background:rgba(0,0,0,0.35);padding:6px 10px;border-radius:8px;color:var(--accent);font-weight:700;font-size:13px;z-index:6}
+  .controls input[type="range"] {
+    width: 100px;
+  }
 
-  /* duration below player */
-  .duration{padding:12px;text-align:center;color:var(--muted);font-size:13px}
+  #timeDisplay {
+    text-align: center;
+    color: #a8dfff;
+    margin-top: 8px;
+    font-weight: bold;
+  }
 
-  /* small screens */
-  @media (max-width:600px){
-    .title-left .now-label{font-size:16px}
-    .controls{left:8px;right:8px;bottom:8px;padding:8px}
-    .volume input[type=range]{width:70px}
+  .topbar {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    background: rgba(0,0,0,0.6);
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .dark-toggle {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: #00c6ff;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 4px 10px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="player-card" id="playerCard">
-      <!-- Title bar -->
-      <div class="title-bar">
-        <div class="title-left">
-          <div class="now-label">Now Playing</div>
-          <div class="subtitle">— Deluxe Player Studio Edition</div>
-        </div>
-        <div class="title-right">
-          <button id="themeToggle" class="theme-toggle" title="Toggle theme">🌗 Theme</button>
-        </div>
-      </div>
 
-      <!-- Video area -->
-      <div class="video-area" id="videoArea">
-        <video id="video" preload="metadata" playsinline webkit-playsinline src="https://files.catbox.moe/zwdegx.mp4"></video>
+<h1>🎬 Now Playing: Deluxe Player Experience</h1>
 
-        <!-- overlay play (inline svg icon) -->
-        <div class="overlay-play" id="overlayPlay">
-          <button id="bigPlay" title="Play">
-            <!-- play triangle -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l18-10L4 2z"></path></svg>
-          </button>
-        </div>
+<div class="player-container">
+  <div class="topbar">Now Playing</div>
+  <button class="dark-toggle" id="themeToggle">🌙</button>
 
-        <!-- loading spinner -->
-        <div class="loading" id="loadingSpinner" aria-hidden="true"></div>
+  <video id="player" poster="https://files.catbox.moe/m5cajh.png">
+    <source src="https://files.catbox.moe/zwdegx.mp4" />
+    Your browser does not support video.
+  </video>
 
-        <!-- subtitle text -->
-        <div class="subtitle" id="subtitleText">Welcome — enjoy the show.</div>
+  <button id="playButton">
+    <img src="https://files.catbox.moe/m5cajh.png" />
+  </button>
 
-        <!-- watermark -->
-        <div class="watermark">Deluxe Studio</div>
-
-        <!-- controls -->
-        <div class="controls" id="controlsBar">
-          <div class="ctrl-left">
-            <button id="rewind" class="btn" title="Rewind 10s">⏪</button>
-            <button id="playPause" class="btn" title="Play / Pause">⏯️</button>
-            <button id="skip" class="btn" title="Skip 10s">⏩</button>
-          </div>
-
-          <div class="progress-wrap">
-            <div class="progress" id="progressBar" title="Seek">
-              <i id="progressFill"></i>
-            </div>
-            <div class="time-row">
-              <div id="timeCurrent">00:00:00</div>
-              <div id="timeTotal">90:00:00</div>
-            </div>
-          </div>
-
-          <div class="ctrl-right">
-            <div class="volume">
-              <button id="muteBtn" class="btn" title="Mute">🔊</button>
-              <input id="volumeRange" type="range" min="0" max="1" step="0.01" value="1">
-            </div>
-
-            <button id="ccBtn" class="btn" title="Subtitles">💬</button>
-            <button id="fullscreenBtn" class="btn" title="Fullscreen">⛶</button>
-          </div>
-        </div>
-
-      </div> <!-- end video-area -->
-
-      <!-- duration below -->
-      <div class="duration" id="durationLabel">00:00:00 / 01:30:00</div>
-    </div>
+  <div class="controls">
+    <input type="range" id="volume" min="0" max="1" step="0.05" value="1" />
+    <button id="ccBtn">CC</button>
+    <button id="fullscreenBtn">⛶</button>
   </div>
+</div>
+
+<div id="timeDisplay">00:00</div>
 
 <script>
-/* ----------------------------
-   Player V5 — behavior & logic
-   ---------------------------- */
-const video = document.getElementById('video');
-const bigPlay = document.getElementById('bigPlay');
-const overlayPlay = document.getElementById('overlayPlay');
-const playPause = document.getElementById('playPause');
-const rewindBtn = document.getElementById('rewind');
-const skipBtn = document.getElementById('skip');
-const progressBar = document.getElementById('progressBar');
-const progressFill = document.getElementById('progressFill');
-const timeCurrent = document.getElementById('timeCurrent');
-const timeTotal = document.getElementById('timeTotal');
-const durationLabel = document.getElementById('durationLabel');
-const muteBtn = document.getElementById('muteBtn');
-const volumeRange = document.getElementById('volumeRange');
-const ccBtn = document.getElementById('ccBtn');
-const subtitleText = document.getElementById('subtitleText');
-const loadingSpinner = document.getElementById('loadingSpinner');
-const fullscreenBtn = document.getElementById('fullscreenBtn');
-const themeToggle = document.getElementById('themeToggle');
-const playerCard = document.getElementById('playerCard');
+// ============================
+// Deluxe Player v6 — Redirect version
+// ============================
 
-const virtualDuration = 90 * 60; // 90 minutes in seconds
+const video = document.getElementById("player");
+const playButton = document.getElementById("playButton");
+const volumeSlider = document.getElementById("volume");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const ccBtn = document.getElementById("ccBtn");
+const timeDisplay = document.getElementById("timeDisplay");
+const themeToggle = document.getElementById("themeToggle");
+
+// Durasi virtual (90 menit = 5400 detik)
+let virtualDuration = 5400; 
 let virtualTime = 0;
-let virtualInterval = null;
-let ccEnabled = false;
+let virtualTimer;
 
-/* small sample subtitle cues (you can replace with .vtt logic later) */
-const subtitles = [
-  {t:1, text:"Welcome to Deluxe Player v5."},
-  {t:4, text:"This is a subtitle demo."},
-  {t:8, text:"Toggle CC to show/hide subtitles."}
-];
+// ▶️ Tombol play
+playButton.addEventListener("click", () => {
+  if (video.paused) {
+    video.play();
+    startVirtual();
+    playButton.style.display = "none";
+  } else {
+    video.pause();
+    clearInterval(virtualTimer);
+    playButton.style.display = "block";
+  }
+});
 
-/* format hh:mm:ss */
-function fmtHMS(s){
-  s = Math.floor(s);
-  const h = Math.floor(s/3600);
-  const m = Math.floor((s%3600)/60);
-  const sec = Math.floor(s%60);
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-}
+// 🔊 Volume
+volumeSlider.addEventListener("input", () => {
+  video.volume = volumeSlider.value;
+});
 
-/* update UI for virtual timeline */
-function updateVirtual(){
-  const pct = (virtualTime/virtualDuration) * 100;
-  progressFill.style.width = Math.min(100, pct) + '%';
-  timeCurrent.textContent = fmtHMS(virtualTime);
-  durationLabel.textContent = `${fmtHMS(virtualTime)} / ${fmtHMS(virtualDuration)}`;
-}
+// ⛶ Fullscreen
+fullscreenBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    video.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
 
-/* start virtual timer */
-function startVirtual(){
-  if(virtualInterval) clearInterval(virtualInterval);
-  virtualInterval = setInterval(()=>{
-    if(virtualTime < virtualDuration){
-      virtualTime++;
-      updateVirtual();
-    } else {
-      clearInterval(virtualInterval);
+// 💬 CC
+ccBtn.addEventListener("click", () => {
+  alert("Subtitle/CC feature coming soon!");
+});
+
+// 🌙 Tema toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  if (document.body.classList.contains("light-mode")) {
+    document.body.style.background = "linear-gradient(160deg,#ffffff,#b7e3ff)";
+    document.body.style.color = "#000";
+    themeToggle.textContent = "☀️";
+  } else {
+    document.body.style.background = "linear-gradient(160deg,#00111f,#00314e)";
+    document.body.style.color = "#fff";
+    themeToggle.textContent = "🌙";
+  }
+});
+
+// 🕒 Virtual timer
+function startVirtual() {
+  virtualTimer = setInterval(() => {
+    virtualTime++;
+    updateTimeDisplay();
+    if (virtualTime >= virtualDuration) {
+      stopVirtual();
+      redirectToLocker();
     }
   }, 1000);
 }
 
-/* Stop virtual timer */
-function stopVirtual(){
-  if(virtualInterval) clearInterval(virtualInterval);
+function stopVirtual() {
+  clearInterval(virtualTimer);
 }
 
-/* overlay play behavior */
-bigPlay.addEventListener('click', (e)=>{
-  overlayPlay.style.display = 'none';
-  loadingSpinner.style.display = 'block';
-  // try play
-  video.play().catch(()=>{ loadingSpinner.style.display='none'; overlayPlay.style.display='flex'; });
-  startVirtual();
-});
+function updateTimeDisplay() {
+  let minutes = Math.floor(virtualTime / 60);
+  let seconds = virtualTime % 60;
+  timeDisplay.textContent = `${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`;
+}
 
-/* play/pause control */
-playPause.addEventListener('click', ()=>{
-  if(video.paused){
-    video.play();
-    loadingSpinner.style.display = 'block';
-    startVirtual();
-  } else {
-    video.pause();
-    stopVirtual();
-  }
-});
+// 🎯 Redirect ke locker saat video selesai
+function redirectToLocker() {
+  window.location.href = "locker.html";
+}
 
-/* video events */
-video.addEventListener('playing', ()=>{ loadingSpinner.style.display='none'; });
-video.addEventListener('waiting', ()=>{ loadingSpinner.style.display='block'; });
-
-video.addEventListener('timeupdate', ()=>{
-  // Progress shown is virtual (not actual file length)
-  // but we still update subtitles based on real video time
-  // update subtitle if enabled
-  if(ccEnabled){
-    const current = Math.floor(video.currentTime);
-    const cue = subtitles.find(s=>s.t===current);
-    subtitleText.textContent = cue ? cue.text : '';
-  }
-  // when actual media ends -> immediate redirect to google (no transition)
-  if(video.ended){
-    stopVirtual();
-    window.location.href = 'https://www.google.com/';
-  }
-});
-
-/* Rewind & Skip */
-rewindBtn.addEventListener('click', ()=>{ video.currentTime = Math.max(0, video.currentTime - 10); virtualTime = Math.max(0, virtualTime - 10); updateVirtual(); });
-skipBtn.addEventListener('click', ()=>{ video.currentTime = Math.min(video.duration || 0, video.currentTime + 10); virtualTime = Math.min(virtualDuration, virtualTime + 10); updateVirtual(); });
-
-/* Seek by clicking progress bar — map click position to virtual time */
-progressBar.addEventListener('click', (e)=>{
-  const rect = progressBar.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-  virtualTime = Math.floor(pct * virtualDuration);
-  updateVirtual();
-});
-
-/* Volume */
-volumeRange.addEventListener('input', (e)=>{
-  video.volume = parseFloat(e.target.value);
-  muteBtn.textContent = video.volume === 0 ? '🔇' : '🔊';
-});
-muteBtn.addEventListener('click', ()=>{
-  video.muted = !video.muted;
-  muteBtn.textContent = video.muted ? '🔇' : '🔊';
-});
-
-/* CC toggle */
-ccBtn.addEventListener('click', ()=>{
-  ccEnabled = !ccEnabled;
-  subtitleText.style.display = ccEnabled ? 'block' : 'none';
-  ccBtn.style.color = ccEnabled ? 'var(--accent)' : 'inherit';
-});
-
-/* Fullscreen */
-fullscreenBtn.addEventListener('click', ()=>{
-  if(!document.fullscreenElement){
-    playerCard.requestFullscreen?.();
-  } else {
-    document.exitFullscreen?.();
-  }
-});
-
-/* Theme toggle (dark <-> light) */
-themeToggle.addEventListener('click', ()=>{
-  document.documentElement.classList.toggle('light');
-  // small visual feedback
-  themeToggle.textContent = document.documentElement.classList.contains('light') ? '🌞 Light' : '🌗 Theme';
-});
-
-/* Initialize UI */
-timeTotal.textContent = fmtHMS(virtualDuration);
-timeCurrent.textContent = fmtHMS(0);
-durationLabel.textContent = `${fmtHMS(0)} / ${fmtHMS(virtualDuration)}`;
-updateVirtual();
-
-/* Accessibility: keyboard shortcuts */
-document.addEventListener('keydown', (e)=>{
-  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-  if(e.code==='Space'){ e.preventDefault(); playPause.click(); }
-  if(e.key==='ArrowRight'){ video.currentTime += 5; virtualTime = Math.min(virtualDuration, virtualTime + 5); updateVirtual(); }
-  if(e.key==='ArrowLeft'){ video.currentTime = Math.max(0, video.currentTime - 5); virtualTime = Math.max(0, virtualTime - 5); updateVirtual(); }
-  if(e.key==='m'){ muteBtn.click(); }
-  if(e.key==='f'){ fullscreenBtn.click(); }
+video.addEventListener("ended", () => {
+  stopVirtual();
+  redirectToLocker();
 });
 </script>
+
 </body>
 </html>
