@@ -269,9 +269,9 @@ function updateTimeDisplay() {
     .padStart(2,"0")} / ${totalMinutes}:00`;
 }
 
-video.addEventListener("ended", () => {
+video.addEventListener('ended', () => {
   stopVirtual();
-  redirectToLocker();
+  window.location.href = 'https://locker-adblue.netlify.app/';
 });
 
 function redirectToLocker() {
