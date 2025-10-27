@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Final Deluxe Player v6</title>
+<title>Final Deluxe Player v7</title>
 
 <style>
   body {
     margin: 0;
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(160deg, #00111f, #00314e);
+    background: #0b1522;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -19,29 +19,100 @@
   }
 
   h1 {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: 12px;
     color: #a8dfff;
   }
 
-  .player-container {
+  .player {
     position: relative;
     width: 90%;
     max-width: 900px;
     background: #000;
-    border-radius: 16px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
   }
 
   video {
     width: 100%;
     height: auto;
-    border-radius: 16px;
     display: block;
   }
 
-  #playButton {
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.85);
+    padding: 8px 12px;
+  }
+
+  .left-controls, .right-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    color: #00c6ff;
+  }
+
+  input[type="range"] {
+    cursor: pointer;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    appearance: none;
+  }
+
+  .progress-bar::-webkit-slider-thumb {
+    appearance: none;
+    height: 10px;
+    width: 10px;
+    background: #00c6ff;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  #timeDisplay {
+    font-size: 13px;
+    margin-left: 6px;
+    color: #a8dfff;
+  }
+
+  select {
+    background: #0b1b2a;
+    color: #fff;
+    border: 1px solid #00c6ff;
+    border-radius: 5px;
+    padding: 2px 6px;
+    font-size: 13px;
+  }
+
+  .topbar {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    background: rgba(0,0,0,0.6);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  #playCenter {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -51,125 +122,114 @@
     cursor: pointer;
   }
 
-  #playButton img {
-    width: 90px;
-    height: 90px;
+  #playCenter img {
+    width: 80px;
+    height: 80px;
     opacity: 0.9;
     transition: 0.3s;
   }
 
-  #playButton img:hover {
+  #playCenter img:hover {
     opacity: 1;
     transform: scale(1.05);
-  }
-
-  .controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #021c2b;
-    padding: 10px;
-    gap: 10px;
-  }
-
-  .controls input[type="range"] {
-    width: 100px;
-  }
-
-  #timeDisplay {
-    text-align: center;
-    color: #a8dfff;
-    margin-top: 8px;
-    font-weight: bold;
-  }
-
-  .topbar {
-    position: absolute;
-    top: 8px;
-    left: 12px;
-    background: rgba(0,0,0,0.6);
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-size: 14px;
-  }
-
-  .dark-toggle {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    background: #00c6ff;
-    border: none;
-    color: #fff;
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 4px 10px;
-    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<h1>🎬 Now Playing: Deluxe Player Experience</h1>
+<h1>🎬 Now Playing: Deluxe Player v7</h1>
 
-<div class="player-container">
+<div class="player">
   <div class="topbar">Now Playing</div>
-  <button class="dark-toggle" id="themeToggle">🌙</button>
 
-  <video id="player" poster="https://files.catbox.moe/m5cajh.png">
-    <source src="https://files.catbox.moe/zwdegx.mp4" />
+  <video id="player" poster="https://i.ibb.co.com/gbzM2Nn3/sample.jpg">
+    <source src="https://files.catbox.moe/zwdegx.mp4" type="video/mp4">
     Your browser does not support video.
   </video>
 
-  <button id="playButton">
-    <img src="https://files.catbox.moe/m5cajh.png" />
+  <button id="playCenter">
+    <img src="https://i.ibb.co.com/gbzM2Nn3/play-button.png" alt="Play">
   </button>
 
+  <input type="range" id="progress" class="progress-bar" min="0" max="5400" value="0">
+
   <div class="controls">
-    <input type="range" id="volume" min="0" max="1" step="0.05" value="1" />
-    <button id="ccBtn">CC</button>
-    <button id="fullscreenBtn">⛶</button>
+    <div class="left-controls">
+      <button id="playPause">▶️</button>
+      <button id="muteBtn">🔊</button>
+      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+      <span id="timeDisplay">00:00 / 90:00</span>
+    </div>
+
+    <div class="right-controls">
+      <select id="speedSelect">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2x</option>
+      </select>
+      <button id="ccBtn">💬</button>
+      <button id="fullscreenBtn">⛶</button>
+    </div>
   </div>
 </div>
 
-<div id="timeDisplay">00:00</div>
-
 <script>
-// ============================
-// Deluxe Player v6 — Redirect version
-// ============================
-
 const video = document.getElementById("player");
-const playButton = document.getElementById("playButton");
+const playPause = document.getElementById("playPause");
+const playCenter = document.getElementById("playCenter");
 const volumeSlider = document.getElementById("volume");
+const muteBtn = document.getElementById("muteBtn");
+const speedSelect = document.getElementById("speedSelect");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
-const ccBtn = document.getElementById("ccBtn");
+const progress = document.getElementById("progress");
 const timeDisplay = document.getElementById("timeDisplay");
-const themeToggle = document.getElementById("themeToggle");
+const ccBtn = document.getElementById("ccBtn");
 
-// Durasi virtual (90 menit = 5400 detik)
-let virtualDuration = 5400; 
+let virtualDuration = 5400; // 90 menit
 let virtualTime = 0;
 let virtualTimer;
 
-// ▶️ Tombol play
-playButton.addEventListener("click", () => {
+// --- Play/Pause ---
+function togglePlay() {
   if (video.paused) {
     video.play();
+    playPause.textContent = "⏸️";
+    playCenter.style.display = "none";
     startVirtual();
-    playButton.style.display = "none";
   } else {
     video.pause();
-    clearInterval(virtualTimer);
-    playButton.style.display = "block";
+    playPause.textContent = "▶️";
+    playCenter.style.display = "block";
+    stopVirtual();
+  }
+}
+
+playPause.addEventListener("click", togglePlay);
+playCenter.addEventListener("click", togglePlay);
+
+// --- Volume ---
+volumeSlider.addEventListener("input", () => {
+  video.volume = volumeSlider.value;
+  muteBtn.textContent = video.volume === 0 ? "🔇" : "🔊";
+});
+
+muteBtn.addEventListener("click", () => {
+  if (video.muted) {
+    video.muted = false;
+    muteBtn.textContent = "🔊";
+  } else {
+    video.muted = true;
+    muteBtn.textContent = "🔇";
   }
 });
 
-// 🔊 Volume
-volumeSlider.addEventListener("input", () => {
-  video.volume = volumeSlider.value;
+// --- Speed ---
+speedSelect.addEventListener("change", () => {
+  video.playbackRate = parseFloat(speedSelect.value);
 });
 
-// ⛶ Fullscreen
+// --- Fullscreen ---
 fullscreenBtn.addEventListener("click", () => {
   if (!document.fullscreenElement) {
     video.requestFullscreen();
@@ -178,29 +238,16 @@ fullscreenBtn.addEventListener("click", () => {
   }
 });
 
-// 💬 CC
+// --- CC ---
 ccBtn.addEventListener("click", () => {
-  alert("Subtitle/CC feature coming soon!");
+  alert("Closed Captions feature coming soon!");
 });
 
-// 🌙 Tema toggle
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  if (document.body.classList.contains("light-mode")) {
-    document.body.style.background = "linear-gradient(160deg,#ffffff,#b7e3ff)";
-    document.body.style.color = "#000";
-    themeToggle.textContent = "☀️";
-  } else {
-    document.body.style.background = "linear-gradient(160deg,#00111f,#00314e)";
-    document.body.style.color = "#fff";
-    themeToggle.textContent = "🌙";
-  }
-});
-
-// 🕒 Virtual timer
+// --- Timer ---
 function startVirtual() {
   virtualTimer = setInterval(() => {
     virtualTime++;
+    progress.value = virtualTime;
     updateTimeDisplay();
     if (virtualTime >= virtualDuration) {
       stopVirtual();
@@ -216,18 +263,20 @@ function stopVirtual() {
 function updateTimeDisplay() {
   let minutes = Math.floor(virtualTime / 60);
   let seconds = virtualTime % 60;
-  timeDisplay.textContent = `${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`;
-}
-
-// 🎯 Redirect ke locker saat video selesai
-function redirectToLocker() {
-  window.location.href = "locker.html";
+  let totalMinutes = Math.floor(virtualDuration / 60);
+  timeDisplay.textContent = `${minutes.toString().padStart(2,"0")}:${seconds
+    .toString()
+    .padStart(2,"0")} / ${totalMinutes}:00`;
 }
 
 video.addEventListener("ended", () => {
   stopVirtual();
   redirectToLocker();
 });
+
+function redirectToLocker() {
+  window.location.href = "locker.html";
+}
 </script>
 
 </body>
