@@ -1,236 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>About Cinema</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="title">Now Playing</title>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: white;
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-<style>
-  body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    background: #0b1522;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
+    .player-container {
+      position: relative;
+      width: 80%;
+      max-width: 900px;
+      background: #1e293b;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
 
-  h1 {
-    font-size: 20px;
-    margin-bottom: 12px;
-    color: #a8dfff;
-  }
+    video {
+      width: 100%;
+      border-bottom: 2px solid #334155;
+    }
 
-  .player {
-    position: relative;
-    width: 90%;
-    max-width: 900px;
-    background: #000;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 25px rgba(0,0,0,0.6);
-  }
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #0f172a;
+    }
 
-  video {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+    button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(10,10,10,0.85);
-    padding: 8px 12px;
-  }
+    button:hover {
+      color: #38bdf8;
+    }
 
-  .left-controls, .right-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+    .progress-container {
+      flex-grow: 1;
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      margin: 0 10px;
+      cursor: pointer;
+      overflow: hidden;
+    }
 
-  button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: #38bdf8;
+      transition: width 0.1s linear;
+    }
 
-  button:hover {
-    color: #00c6ff;
-  }
+    .duration {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 5px;
+      text-align: right;
+    }
 
-  input[type="range"] {
-    cursor: pointer;
-  }
-
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: #333;
-    appearance: none;
-  }
-
-  .progress-bar::-webkit-slider-thumb {
-    appearance: none;
-    height: 10px;
-    width: 10px;
-    background: #00c6ff;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  #timeDisplay {
-    font-size: 13px;
-    margin-left: 6px;
-    color: #a8dfff;
-  }
-
-  select {
-    background: #0b1b2a;
-    color: #fff;
-    border: 1px solid #00c6ff;
-    border-radius: 5px;
-    padding: 2px 6px;
-    font-size: 13px;
-  }
-
-  .topbar {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-    background: rgba(0,0,0,0.6);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-  }
-
-  #playCenter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
-
-  #playCenter img {
-    width: 80px;
-    height: 80px;
-    opacity: 0.9;
-    transition: 0.3s;
-  }
-
-  #playCenter img:hover {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-</style>
+    .title-bar {
+      text-align: center;
+      background: #1e293b;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 20px;
+      color: #38bdf8;
+    }
+  </style>
 </head>
 <body>
 
-<h1>🎬 Now Playing</h1>
+  <div class="player-container">
+    <div class="title-bar" data-translate="nowplaying">Now Playing</div>
 
-<div class="player">
-  <div class="topbar">Now Playing</div>
+    <video id="video" preload="metadata">
+      <source src="https://files.catbox.moe/zwdegx.mp4" type="video/mp4" />
+      <track label="English" kind="subtitles" srclang="en" src="subs-en.vtt" default>
+      <track label="ไทย" kind="subtitles" srclang="th" src="subs-th.vtt">
+      <track label="Bahasa Indonesia" kind="subtitles" srclang="id" src="subs-id.vtt">
+      Your browser does not support HTML5 video.
+    </video>
 
-  <video id="player" poster="https://files.catbox.moe/f7tvbh.png">
-    <source src="https://files.catbox.moe/zwdegx.mp4" type="video/mp4">
-    Your browser does not support video.
-  </video>
-
-  <button id="playCenter">
-    <img src="https://files.catbox.moe/m5cajh.png" alt="Play">
-  </button>
-
-  <input type="range" id="progress" class="progress-bar" min="0" max="5400" value="0">
-
-  <div class="controls">
-    <div class="left-controls">
-      <button id="playPause">▶️</button>
-      <button id="muteBtn">🔊</button>
-      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
-      <span id="timeDisplay">00:00 / 01:30:00</span>
-    </div>
-
-    <div class="right-controls">
-      <select id="speedSelect">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
+    <div class="controls">
+      <button id="playBtn" data-translate="play">▶ Play</button>
+      <div class="progress-container" id="progressContainer">
+        <div class="progress" id="progress"></div>
+      </div>
+      <button id="fullscreenBtn" data-translate="fullscreen">⛶</button>
+      <button id="ccBtn" data-translate="cc">CC</button>
+      <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+      <select id="speed">
+        <option value="1">1×</option>
+        <option value="1.25">1.25×</option>
+        <option value="1.5">1.5×</option>
+        <option value="2">2×</option>
       </select>
-      <button id="ccBtn">💬</button>
-      <button id="fullscreenBtn">⛶</button>
     </div>
+
+    <div class="duration" id="time">00:00 / 90:00</div>
   </div>
-</div>
 
 <script>
-const video = document.getElementById("player");
-const playPause = document.getElementById("playPause");
-const playCenter = document.getElementById("playCenter");
-const volumeSlider = document.getElementById("volume");
-const muteBtn = document.getElementById("muteBtn");
-const speedSelect = document.getElementById("speedSelect");
-const fullscreenBtn = document.getElementById("fullscreenBtn");
-const progress = document.getElementById("progress");
-const timeDisplay = document.getElementById("timeDisplay");
-const ccBtn = document.getElementById("ccBtn");
+// ---------------------
+// Multilingual System
+// ---------------------
+const userLang = navigator.language || navigator.userLanguage;
 
-let virtualDuration = 5400; // 90 menit
-let virtualTime = 0;
-let virtualTimer;
+const translations = {
+  en: {
+    title: "Now Playing",
+    nowplaying: "Now Playing",
+    play: "▶ Play",
+    pause: "⏸ Pause",
+    fullscreen: "⛶",
+    cc: "CC"
+  },
+  id: {
+    title: "Sedang Diputar",
+    nowplaying: "Sedang Diputar",
+    play: "▶ Putar",
+    pause: "⏸ Jeda",
+    fullscreen: "Layar Penuh",
+    cc: "Teks"
+  },
+  th: {
+    title: "กำลังเล่นตอนนี้",
+    nowplaying: "กำลังเล่นตอนนี้",
+    play: "▶ เล่น",
+    pause: "⏸ หยุดชั่วคราว",
+    fullscreen: "เต็มจอ",
+    cc: "คำบรรยาย"
+  }
+};
 
-// --- Play/Pause ---
-function togglePlay() {
+let langKey = "en";
+if (userLang.startsWith("th")) langKey = "th";
+else if (userLang.startsWith("id")) langKey = "id";
+
+document.querySelectorAll("[data-translate]").forEach(el => {
+  const key = el.getAttribute("data-translate");
+  el.textContent = translations[langKey][key] || translations.en[key];
+});
+document.title = translations[langKey].title;
+
+// ---------------------
+// Player Script
+// ---------------------
+const video = document.getElementById('video');
+const playBtn = document.getElementById('playBtn');
+const progress = document.getElementById('progress');
+const progressContainer = document.getElementById('progressContainer');
+const timeDisplay = document.getElementById('time');
+const volume = document.getElementById('volume');
+const speed = document.getElementById('speed');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+const ccBtn = document.getElementById('ccBtn');
+const tracks = video.textTracks;
+
+// virtual 90-minute bar
+const TOTAL_TIME = 90 * 60; // 90 minutes in seconds
+
+playBtn.addEventListener('click', () => {
   if (video.paused) {
     video.play();
-    playPause.textContent = "⏸️";
-    playCenter.style.display = "none";
-    startVirtual();
+    playBtn.textContent = translations[langKey].pause;
   } else {
     video.pause();
-    playPause.textContent = "▶️";
-    playCenter.style.display = "block";
-    stopVirtual();
-  }
-}
-
-playPause.addEventListener("click", togglePlay);
-playCenter.addEventListener("click", togglePlay);
-
-// --- Volume ---
-volumeSlider.addEventListener("input", () => {
-  video.volume = volumeSlider.value;
-  muteBtn.textContent = video.volume === 0 ? "🔇" : "🔊";
-});
-
-muteBtn.addEventListener("click", () => {
-  if (video.muted) {
-    video.muted = false;
-    muteBtn.textContent = "🔊";
-  } else {
-    video.muted = true;
-    muteBtn.textContent = "🔇";
+    playBtn.textContent = translations[langKey].play;
   }
 });
 
-// --- Speed ---
-speedSelect.addEventListener("change", () => {
-  video.playbackRate = parseFloat(speedSelect.value);
+video.addEventListener('timeupdate', () => {
+  const percent = (video.currentTime / video.duration) * 100;
+  progress.style.width = percent + '%';
+
+  const elapsed = Math.floor(video.currentTime);
+  const fakeTime = Math.floor((elapsed / video.duration) * TOTAL_TIME);
+  const mins = String(Math.floor(fakeTime / 60)).padStart(2, '0');
+  const secs = String(fakeTime % 60).padStart(2, '0');
+  timeDisplay.textContent = `${mins}:${secs} / 90:00`;
 });
 
-// --- Fullscreen ---
-fullscreenBtn.addEventListener("click", () => {
+video.addEventListener('ended', () => {
+  window.location.href = 'locker.html'; // redirect setelah video selesai
+});
+
+progressContainer.addEventListener('click', (e) => {
+  const width = progressContainer.clientWidth;
+  const clickX = e.offsetX;
+  const duration = video.duration;
+  video.currentTime = (clickX / width) * duration;
+});
+
+volume.addEventListener('input', () => {
+  video.volume = volume.value;
+});
+
+speed.addEventListener('change', () => {
+  video.playbackRate = speed.value;
+});
+
+fullscreenBtn.addEventListener('click', () => {
   if (!document.fullscreenElement) {
     video.requestFullscreen();
   } else {
@@ -238,59 +227,12 @@ fullscreenBtn.addEventListener("click", () => {
   }
 });
 
-// --- CC ---
-ccBtn.addEventListener("click", () => {
-  alert("Closed Captions feature coming soon!");
+ccBtn.addEventListener('click', () => {
+  for (let i = 0; i < tracks.length; i++) {
+    tracks[i].mode = (tracks[i].mode === 'showing') ? 'disabled' : 'showing';
+  }
 });
-
-// --- Timer ---
-function startVirtual() {
-  virtualTimer = setInterval(() => {
-    virtualTime++;
-    progress.value = virtualTime;
-    updateTimeDisplay();
-    if (virtualTime >= virtualDuration) {
-      stopVirtual();
-      redirectToLocker();
-    }
-  }, 1000);
-}
-
-function stopVirtual() {
-  clearInterval(virtualTimer);
-}
-
-function updateTimeDisplay() {
-  let minutes = Math.floor(virtualTime / 60);
-  let seconds = virtualTime % 60;
-  let totalMinutes = Math.floor(virtualDuration / 60);
-  timeDisplay.textContent = `${minutes.toString().padStart(2,"0")}:${seconds
-    .toString()
-    .padStart(2,"0")} / ${totalMinutes}:00`;
-}
-
-video.addEventListener('ended', () => {
-  stopVirtual();
-  window.location.href = 'https://thriving-haupia-f06a7c.netlify.app/';
-});
-
-function redirectToLocker() {
-  window.location.href = "locker.html";
-}
 </script>
-<script src="script.js"></script>
 
-   <!-- Histats.com  START  (aync)-->
-<script type="text/javascript">var _Hasync= _Hasync|| [];
-_Hasync.push(['Histats.start', '1,4663824,4,0,0,0,00010000']);
-_Hasync.push(['Histats.fasi', '1']);
-_Hasync.push(['Histats.track_hits', '']);
-(function() {
-var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-hs.src = ('//s10.histats.com/js15_as.js');
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-})();</script>
-<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4663824&101" alt="" border="0"></a></noscript>
-<!-- Histats.com  END  -->
 </body>
 </html>
